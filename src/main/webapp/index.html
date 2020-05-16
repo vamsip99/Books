@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<style>
+	body {
+        background-image: url('images/cover.jpg');
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        background-size: 100% 100%;
+        /*font-style: */
+    }
+</style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css">
+  <link rel="stylesheet" href="css/style.css"/>
+<title>Books Search</title>
+
+<body class="#212121">
+	<div id="search" class="#f5f5f5 grey lighten-4 z-depth-5 pad">
+		<form id="myform">
+			<div class="input-field">
+				<input type="search" id="books">
+				<label for="search">Search Books</label>
+			</div>
+			<div class="col-xs-6 text-left previous">
+			<input type="Submit" class="btn btn-primary">
+			</div>
+			<div class="col-xs-6 text-right next">
+			<input type="reset" class="btn btn-primary" value="Reset" onClick="window.location.reload()">
+			</div>
+		</form>
+	</div>
+	<div id="result" class="">
+		
+	</div>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
+	<script src="js/script.js"></script>
+</body>
+</head>
+</html>
