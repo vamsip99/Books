@@ -1,32 +1,31 @@
 package org.myBooks.controller;
 
+import com.google.gson.Gson;
+import org.myBooks.beans.Customer;
+import org.myBooks.dao.CustomerDao;
 import org.myBooks.services.AuthenticationService;
-import org.myBooks.util.Constants;
 
 import javax.ws.rs.FormParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
-import java.net.URI;
 
 @Path("/Authenticate")
 public class AuthenticateController {
     @POST
     public Response authenticate(
             @FormParam("emailN") String userId,
-            @FormParam("passwordN") String pwd
-    ) throws java.net.URISyntaxException
+            @FormParam("passwordN") String pwd)
     {
         boolean status = new AuthenticationService().authenticate(userId, pwd);
-        String url = Constants.HOME;
-        url += status? "index.html": "Login.html";
-
-        if(status) {
-             url +="?userName="+userId;
-            return Response.seeOther(new URI(url)).build();
+        Customer c = CustomerDao.getCustomerByUserName(userId);
+        if(c != null) {
+            c.setEmail("");
+            c.setPwd("");
+            c.setId(0);
         }
-        return Response.seeOther(new URI(url)).build();
-
+        if(status)  return Response.ok(new Gson().toJson(c)).status(Response.Status.ACCEPTED).build();
+        return Response.status(Response.Status.UNAUTHORIZED).build();
     }
 
 }
