@@ -11,7 +11,7 @@ public class AuthenticationService {
             c = CustomerDao.getCustomerByUserName(key);
         else
             c = CustomerDao.getCustomerByEmail(key);
-
+        if(c == null) return false;
         return c.getPwd().equals(pwd);
     }
 }
