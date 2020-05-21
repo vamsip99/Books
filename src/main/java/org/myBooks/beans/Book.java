@@ -6,7 +6,8 @@ public class Book {
     private String isbn13;
     private String domainName;
     private String path;
-    private Integer price;
+    private Float price;
+    private String format;
     private Integer ourPrice;
 
     @Override
@@ -19,8 +20,17 @@ public class Book {
                 ", path='" + path + '\'' +
                 ", price=" + price +
                 ", ourPrice=" + ourPrice +
+                ", format='" + format + '\'' +
                 ", apiPath='" + apiPath + '\'' +
                 '}';
+    }
+
+    public String getFormat() {
+        return format;
+    }
+
+    public void setFormat(String format) {
+        this.format = format;
     }
 
     private String apiPath;
@@ -73,11 +83,11 @@ public class Book {
         this.path = path;
     }
 
-    public Integer getPrice() {
+    public Float getPrice() {
         return price;
     }
 
-    public void setPrice(Integer price) {
+    public void setPrice(Float price) {
         this.price = price;
     }
 

@@ -9,22 +9,21 @@ import org.myBooks.beans.Book;
 import org.myBooks.beans.Vendor;
 
 import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
 
 public class HTMLScraper {
-    public static Book scrap(Vendor v, String s) {
+    public static List<Book> scrap(Vendor v, String isbn) {
         switch(v.getName()) {
             case "crossword.in":
-                return crosswordScrap(v, s);
+                return crosswordScrap(v, isbn);
+            case "Amazon.in":
+                return amazoninScrap(v, isbn);
         }
         return null;
     }
 
-    public static Book crosswordScrap(Vendor vendor, String isbn) {
-
-//        String url = "https://www.crossword.in/search?q=0143450832";
-//        url = "https://www.crossword.in/search?q=1526626172";
-//        getBookUrl(url, "https://www.crossword.in");
-
+    public static List<Book> crosswordScrap(Vendor vendor, String isbn) {
         Book book = null;
         String url;
         try {
@@ -43,9 +42,51 @@ public class HTMLScraper {
             book.setPath(bookUrl);
             book.setVendor("Crossword.in");
         }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
+        List<Book> books = new LinkedList<Book>();
+        if(book != null) books.add(book);
+        return books;
+    }
+
+    private static List<Book> amazoninScrap(Vendor vendor, String isbn) {
+        List<Book> books = new LinkedList<Book>();
+        String url;
+        try {
+            String searchUrl = vendor.getQueryUrl().replaceAll("ISBN10", isbn);
+            Document doc = Jsoup.connect(searchUrl).get();
+            Elements pages = doc.getElementsByAttributeValue("class", "a-link-normal");
+            Element page = pages.get(1);
+            String bookUrl = vendor.getHome() + page.attr("href");
+
+            doc = Jsoup.connect(bookUrl).get();
+            Element ele = doc.getElementById("formats");
+            Elements elems = ele.getElementsByAttributeValue("class", "a-button a-spacing-mini a-button-toggle format");
+
+            int i = 0;
+            for(Element e : elems) {
+                Element e2 = (Element)(e.childNode(0).childNode(0));
+                try {
+                    String cont = e2.childNode(5).childNode(1).childNode(0).toString();
+                    Book b = new Book();
+                    Float price = Float.parseFloat(cont.substring(8));
+                    String format = e2.childNode(1).childNode(0).toString();
+                    b.setPrice(price);
+                    b.setFormat(format);
+                    b.setVendor(vendor.getName());
+                    b.setPath(bookUrl);
+                    books.add(b);
+                }
+                catch (Exception ee){
+                    ee.printStackTrace();
+                }
+                i++;
+            }
+        }
         catch(IOException e) {
             e.printStackTrace();
         }
-        return book;
+        return books;
     }
 }
