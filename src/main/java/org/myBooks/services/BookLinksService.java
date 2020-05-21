@@ -12,8 +12,8 @@ public class BookLinksService {
         List<Book> books = new LinkedList<Book>();
         List<Vendor> vendors = new VendorDao().getAll();
         for(Vendor v :  vendors) {
-            Book book = HTMLScraper.scrap(v, isbn10);
-            if(book != null) books.add(book);
+            List<Book> cur = HTMLScraper.scrap(v, isbn10);
+            books.addAll(cur);
         }
         return books;
     }
