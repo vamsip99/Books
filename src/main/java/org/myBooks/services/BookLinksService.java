@@ -12,6 +12,7 @@ public class BookLinksService {
         List<Book> books = new LinkedList<Book>();
         List<Vendor> vendors = new VendorDao().getAll();
         for(Vendor v :  vendors) {
+            //System.out.println("Scraping Vendor"+v);
             List<Book> cur = HTMLScraper.scrap(v, isbn10);
             books.addAll(cur);
         }
