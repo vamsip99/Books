@@ -17,6 +17,7 @@ public class BookLinksController {
     public Response getBookLinks(@QueryParam("isbn10") String isbn10) {
 //        isbn10 ="0143450832";
         List<Book> bookLinks = BookLinksService.getBookLinks(isbn10);
+        //System.out.println(bookLinks);
         Gson gson = new Gson();
         return Response.ok(gson.toJson(bookLinks)).status(Response.Status.ACCEPTED).build();
     }
