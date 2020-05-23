@@ -135,7 +135,8 @@
 									},
 								  ];
 								  */
-								getVendors(ds.isbn10).then(function (vendors) {
+								// getVendors(ds.isbn10).then(function (vendors) {
+								getVendors(ds.title).then(function (vendors) {
 									let generateHtml = `
 					<div class='container'>
 					 <div class='row p-2 border-bottom'>
@@ -160,7 +161,7 @@
 											html +
 											`<div class='p-2' key=${index}>
 							 <a type='button' class='btn btn-outline-secondary col-12'
-							 href=${item.path} target='_blank' >${item.vendor} - ${item.price} </a>
+							 href=${item.path} target='_blank' >${item.vendor} - ${item.format} - ${item.ourPrice} </a>
 						 </div>`,
 										''
 									)}
