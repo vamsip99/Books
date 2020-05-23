@@ -1,88 +1,183 @@
-$(document).ready(function(){
-
-	$("#myform").submit(function(){
-		var search = $("#books").val();
-		if(search == "")
-		{
-			alert("Please enter something in the field");
+	$(document).ready(function () {
+		function showAlert(text) {
+			console.error(text);
+			let innerHtml = `<div class="alert alert-warning" role="alert">${text}</div>`;
+			$('#alerts').html(innerHtml);
 		}
-		else{
-			var url = "";
-			var img = "";
-			var title = "";
-			var author = "";
-			//   var price = "";
-			//   var buyLink = "";
-			//   var isbn = "";
-			var compare = "";
-			var section ="";
 
+		function resetAll() {
+			$('#results').empty();
+			$('#alerts').empty();
+		}
 
-			$.get("https://www.googleapis.com/books/v1/volumes?q=" + search,function(response){
+		$('.close').click(function () {
+			$('#modal').modal().hide();
+		});
 
-				console.log(response);
-				$("#result").empty();
-				for(i=0;i<5/*response.items.length*/;i++)
-				{
+		$('#reset').click(function (e) {
+			e.preventDefault();
+			$('#txtBooks').val('');
+			resetAll();
+		});
 
-					url= response.items[i].volumeInfo.imageLinks.smallThumbnail;
-					img = $('<img class="left"><br><a href=' + response.items[i].volumeInfo.infoLink + '><button class="waves-effect waves-light btn down">Read More</button></a>');
-					img.appendTo('#result');
-					img.attr('src', url);
-					title=$('<h2 class="title black-text">Title : <u>' + response.items[i].volumeInfo.title + '</u></h2>');
-					title.appendTo('#result');
-					author=$('<h3 class="author black-text"> Author:<u>' + response.items[i].volumeInfo.authors + '</u></h3>');
-					author.appendTo('#result');
-					// price=$('<h3 class="price red-text">Price : <u>' + response.items[i].saleInfo.retailPrice.amount + '</u></h4>');
-					// price.appendTo('#result');
-					// buyLink=$('<h4 class="buy black-text">Buy : <a href=>' + response.items[i].saleInfo.buyLink + '</a></h5><br>');
-					// // buyLink.appendTo('#result');
-					// isbn=$('<h4 class="buy black-text">ISBN : <u>' + response.items[i].volumeInfo.industryIdentifiers[1].identifier + '</u></h4><br>');
-					// isbn.appendTo('#result');
-					//Added By Shivani
-					var btn_name="myBtn"+i;
-					compare=$('<button id=' + btn_name + '>Open Modal</button>');
-					compare.appendTo('#result');
-					// Get the modal
-					var modal = document.getElementById("myModal");
+		function getVendors(isbn10) {
+			const VENDOR_API = `http://localhost:8080/Books_war/webapi/bookLinks?isbn10=${isbn10}`;
+			return fetch(VENDOR_API)
+				.then(function (response) {
+					if (response.ok) return response.json();
+					console.error(`response failed.`);
+				})
+				.catch(function (error) {
+					console.error(`Error occured ` + error);
+				});
+		}
 
-// Get the button that opens the modal
-					var btn = document.getElementById("myBtn"+i);
-
-// Get the <span> element that closes the modal
-					var span = document.getElementsByClassName("close")[0];
-
-// When the user clicks on the button, open the modal
-					btn.onclick = function() {
-						modal.style.display = "block";
-					}
-
-// When the user clicks on <span> (x), close the modal
-					span.onclick = function() {
-						modal.style.display = "none";
-					}
-
-// When the user clicks anywhere outside of the modal, close it
-					window.onclick = function(event) {
-						if (event.target == modal) {
-							modal.style.display = "none";
+		$('#myform').submit(function () {
+			// reset all ids
+			resetAll();
+			// get search value check with regex to allow only numbers and strings
+			const searchText = $('#txtBooks').val();
+			if (!searchText.match(/^[a-z0-9\s]{0,255}$/i) || searchText == '') {
+				showAlert('search value is invalid.');
+			} else {
+				const API_URL = 'https://www.googleapis.com/books/v1/volumes?q=';
+				let innerHtml = '';
+				$.get(API_URL + searchText, function (response) {
+					console.log(response);
+				})
+					.done(function (response) {
+						if (response.totalItems > 0) {
+							let generateHtml = response.items.reduce((html, item, index) => {
+								const authors = item.volumeInfo.authors
+									? item.volumeInfo.authors
+									: [];
+								let isbnObj = item.volumeInfo.industryIdentifiers
+									? item.volumeInfo.industryIdentifiers.find(
+										(item) => item['type'] == 'ISBN_10'
+									)
+									: {};
+								let isSalable =
+									item.saleInfo &&
+									Object.keys(item.saleInfo).length > 0 &&
+									item.saleInfo.saleability == 'FOR_SALE'
+										? true
+										: false;
+								let price = '';
+								let buyLink = '';
+								if (isSalable) {
+									buyLink = item.saleInfo.buyLink;
+									price = item.saleInfo.retailPrice
+										? `${item.saleInfo.retailPrice.amount} ${item.saleInfo.retailPrice.currencyCode}`
+										: `${item.saleInfo.listPrice.amount} ${item.saleInfo.retailPrice.currencyCode}`;
+								} else {
+									price = 'Not for sale';
+								}
+								const isbn10 = isbnObj ? isbnObj.identifier : null;
+								return (
+									html +
+									(isbn10 && item.volumeInfo
+										? `<li key=${index} class='list-group-item m-1'>
+									<div class='row'>
+										<div class='col-4 col-md-3 col-lg-2'><img src =${
+											item.volumeInfo.imageLinks
+												? item.volumeInfo.imageLinks.smallThumbnail
+												: ''
+										} alt=${item.volumeInfo.title}/></div>
+										<div class='col-8 col-md-9 col-lg-10'>
+											<button class='btn btn-link generateModal pl-0 text-left' data-isbn10='${isbn10}' data-price='${price}'
+											data-buylink='${buyLink}'
+											data-thumbnail ='${
+											item.volumeInfo.imageLinks
+												? item.volumeInfo.imageLinks.smallThumbnail
+												: ''
+										}'
+											data-title = ${item.volumeInfo.title.replace(/\ /g, '%20')}
+											><i class='fa fa-book'></i> ${item.volumeInfo.title}</button>
+											<div class='text-secondary'>${
+											authors.length > 0
+												? `<i class='fa fa-user'></i> ` + authors.join(', ')
+												: ''
+										}</div>
+											<p class='pt-1'>${
+											item.volumeInfo.description &&
+											item.volumeInfo.description.length > 300
+												? item.volumeInfo.description.substr(0, 300) + '....'
+												: item.volumeInfo.description
+										}</p>
+										</div>
+									</div>
+								</li>`
+										: '')
+								);
+							}, `<ul class='list-group'>`);
+							$('#results').append(generateHtml + '</ul>');
+							$('.generateModal').click(function (event) {
+								console.info(event.target.dataset);
+								$('.modal-body').empty();
+								let ds = event.target.dataset;
+								const title = ds.title.replace(/\%20/g, ' ');
+								// make java api call to get other data
+								/*
+								  [
+									{
+									  vendor: 'Amazon.in',
+									  path:
+										'https://www.amazon.in//Eragon-Inheritance-Cycle-Christopher-Paolini/dp/0966621336/ref\u003dsr_1_1?dchild\u003d1\u0026keywords\u003d9780966621334\u0026qid\u003d1590160176\u0026sr\u003d8-1#customerReviews',
+									  price: 183.06,
+									  format: 'Kindle Edition',
+									},
+									{
+									  vendor: 'Amazon.in',
+									  path:
+										'https://www.amazon.in//Eragon-Inheritance-Cycle-Christopher-Paolini/dp/0966621336/ref\u003dsr_1_1?dchild\u003d1\u0026keywords\u003d9780966621334\u0026qid\u003d1590160176\u0026sr\u003d8-1#customerReviews',
+									  price: 190.0,
+									  format: 'Paperback',
+									},
+								  ];
+								  */
+								getVendors(ds.isbn10).then(function (vendors) {
+									let generateHtml = `
+					<div class='container'>
+					 <div class='row p-2 border-bottom'>
+					   <div class='col-4'>
+						 <img src =${ds.thumbnail} alt=${title}/>
+					   </div>
+					   <div class='col-8'>
+						 <div class='dispaly-4'>${title}</div>
+					   </div>
+					 </div>
+					 <div class='vendors d-flex flex-column'>
+					   <div class='p-2'>
+						 ${
+										ds.price != 'Not for sale'
+											? `<a type='button' class='btn btn-outline-secondary col-12'
+							 href=${ds.buylink} target='_blank' ><i class='fa fa-google'></i> Books - ${ds.price} </a>`
+											: ''
+									}
+					   </div>
+					   ${vendors.reduce(
+										(html, item, index) =>
+											html +
+											`<div class='p-2' key=${index}>
+							 <a type='button' class='btn btn-outline-secondary col-12'
+							 href=${item.path} target='_blank' >${item.vendor} - ${item.price} </a>
+						 </div>`,
+										''
+									)}
+					 </>
+				   </div>`;
+									$('.modal-body').append(generateHtml);
+									$('#modal').modal('show');
+								});
+							});
+						} else {
+							showAlert('No books found. Please try with different keywords.');
 						}
-					}
-					//Closed By Shivani
-
-				}
-			});
-
-		}
-		return false;
+					})
+					.fail(function (error) {
+						console.error(`Error occured accessing API -` + error.responseText);
+					});
+			}
+			return false;
+		});
 	});
-
-
-});
-
-
-
-//Added By Shivani 
-
-
-//Closed By Shivani
