@@ -1,5 +1,2 @@
-/target/Books
-/target/classes
-/target/generated-sources
-/target/
-/bin/
+target
+bin
