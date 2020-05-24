@@ -1,5 +1,6 @@
 /target/Books
 /target/classes
 /target/generated-sources
-/target/
+/target
 /bin/
+/target/Books.war
