@@ -15,7 +15,7 @@ import java.util.List;
 public class HTMLScraper {
     public static List<Book> scrap(Vendor v, String isbn) {
         switch(v.getName()) {
-            case "crossword.in":
+            case "Crossword.in":
                 return Crossword.scrap(v, isbn);
             case "Amazon.in":
                 return Amazon.scrap(v, isbn);

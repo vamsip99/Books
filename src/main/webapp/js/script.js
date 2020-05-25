@@ -21,7 +21,7 @@
 		});
 
 		function getVendors(isbn10) {
-			const VENDOR_API = `http://localhost:8080/Books_war/webapi/bookLinks?isbn10=${isbn10}`;
+			const VENDOR_API = `webapi/bookLinks?isbn10=${isbn10}`;
 			return fetch(VENDOR_API)
 				.then(function (response) {
 					if (response.ok) return response.json();
