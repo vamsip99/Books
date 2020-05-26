@@ -1,0 +1,1 @@
+flyway -url=jdbc:mysql://localhost:3306/bookstore -user=admin -password=Admin@123456 -outOfOrder=true -ignoreMissingMigrations=true -locations=filesystem:migrations migrate
