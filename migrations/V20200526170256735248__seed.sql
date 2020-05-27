@@ -1,2 +1,0 @@
-insert into vendor(id,home,name,queryUrl) values (1,'https://www.crossword.in', 'Crossword.in', 'https://www.crossword.in/search?q=ISBN10');
-insert into vendor(id,home,name,queryUrl) values (2,'https://www.amazon.in', 'Amazon.in', 'https://www.amazon.in/s?k=ISBN10&ref=nb_sb_noss');

@@ -34,18 +34,18 @@ public class MyResource {
         return "Got it!";
     }
 
-//    public static void main(String arg[]) {
-//        Session session = DBConnect.getSession();
+   public static void main(String args[]) {
+     //   Session session = DBConnect.getSession();
 //        Customer s = new Customer();
 //        s.setUser_name("vamceep");
 //        s.setPwd("abs");
 //        s.setLast_name("ponnada");
 //        s.setFirst_name("vamsi");
 //        s.setEmail("vamcee.p@gmail.com");
-//        Vendor v = new Vendor();
-//        v.setName("Crossword.in");
-//        v.setHome("https://www.crossword.in/");
-//        v.setQueryUrl("https://www.crossword.in/search?q=ISBN10");
+    //    Vendor v = new Vendor();
+     //   v.setName("Crossword.in");
+      //  v.setHome("https://www.crossword.in/");
+       // v.setQueryUrl("https://www.crossword.in/search?q=ISBN10");
 
 //
 //        Vendor v2 = new Vendor();
@@ -53,12 +53,12 @@ public class MyResource {
 //        v2.setHome("https://www.amazon.in/");
 //        v2.setQueryUrl("https://www.amazon.in/s?k=ISBN10&ref=nb_sb_noss");
 //
-//        Transaction tx = session.beginTransaction();
-////        session.save(v);
-//        session.save(v2);
-//        tx.commit();
+     //  Transaction tx = session.beginTransaction();
+      //  session.save(v);
+  //     session.save(v2);
+        //tx.commit();
 
 //        Query q = session.createQuery("from Customer where user_name =:v", Customer.class);
 //        q.setParameter("v", "vamceep");
-//    }
+    }
 }
