@@ -16,6 +16,7 @@ public class BookLinksController {
     @GET
     public Response getBookLinks(@QueryParam("isbn10") String isbn10) {
 //        isbn10 ="0143450832";
+        isbn10 = isbn10.replaceAll(" ", "%20");
         List<Book> bookLinks = BookLinksService.getBookLinks(isbn10);
         //System.out.println(bookLinks);
         Gson gson = new Gson();

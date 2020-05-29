@@ -8,7 +8,7 @@ public class Book {
     private String path;
     private Float price;
     private String format;
-    private Integer ourPrice;
+    private Float ourPrice;
 
     @Override
     public String toString() {
@@ -91,11 +91,11 @@ public class Book {
         this.price = price;
     }
 
-    public Integer getOurPrice() {
+    public Float getOurPrice() {
         return ourPrice;
     }
 
-    public void setOurPrice(Integer ourPrice) {
+    public void setOurPrice(Float ourPrice) {
         this.ourPrice = ourPrice;
     }
 }
