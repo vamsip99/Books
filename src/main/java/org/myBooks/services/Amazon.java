@@ -15,12 +15,14 @@ public class Amazon {
 
     private static String getBookUrl(Vendor vendor, String search) {
         String searchUrl = vendor.getQueryUrl().replaceAll("ISBN10", search);
+        //System.out.println("searchUrl "+searchUrl);
         try {
             Document doc = Jsoup.connect(searchUrl).get();
             Elements pages = doc.getElementsByAttributeValue("class", "a-link-normal");
             Element page = pages.get(1);
             String bookUrl = vendor.getHome() + page.attr("href");
             bookUrl = bookUrl.replace("#customerReviews","");
+            //System.out.println("getBookURL "+bookUrl);
             return bookUrl;
         }
         catch(Exception e) {
@@ -44,8 +46,10 @@ public class Amazon {
     public static List<Book> scrap(Vendor vendor, String search) {
         List<Book> books = new LinkedList<>();
         String bookUrl = getBookUrl(vendor, search);
+        System.out.println("scrap "+bookUrl);
         if(bookUrl.length() == 0) return books;
         try {
+            //System.out.println("Amazon url "+bookUrl);
             Document doc = Jsoup.connect(bookUrl).get();
             Elements buttons= doc.getElementsByAttributeValue("class", "a-button-text");
             Elements elms = new Elements();

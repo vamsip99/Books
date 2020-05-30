@@ -19,6 +19,7 @@ public class Crossword {
         String url;
         try {
             String searchUrl = vendor.getQueryUrl().replaceAll("ISBN10", search);
+            //System.out.println("Crossword url "+searchUrl);
             Document doc = Jsoup.connect(searchUrl).get();
             Element pag = doc.getElementById("search-result-items");
             Elements e = ((Element)pag.childNode(1)).select("a");

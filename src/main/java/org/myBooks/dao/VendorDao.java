@@ -13,6 +13,8 @@ public class VendorDao {
         Session session = DBConnect.getSession();
         Query q = session.createQuery("FROM Vendor", Vendor.class);
         List<Vendor> vendors = q.list();
+        //for(Vendor v:vendors)
+        //System.out.println(v.getQueryUrl());
         return vendors;
     }
 }
