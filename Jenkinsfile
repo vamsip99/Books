@@ -49,7 +49,7 @@ stage('Deploy Docker Image') {
      steps{
        sh '''
 docker top books && docker rm -f books 2> /dev/null
-docker run -d --name books -p 9090:8099 -p 3306:3306 vamceep/bookstore:latest
+docker run -d --name books -p 9090:8099 -p 3307:3306 vamceep/bookstore:latest
 '''
      }
    }
