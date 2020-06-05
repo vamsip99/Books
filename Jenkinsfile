@@ -13,9 +13,8 @@ pipeline {
      }
    }
    stage('Build'){
-       def myMvn = tool name: 'M3', type: 'maven'
        steps {
-
+        def myMvn = tool name: 'M3', type: 'maven'
 	    sh "${myMvn}/bin/mvn clean install"
        }
    }
